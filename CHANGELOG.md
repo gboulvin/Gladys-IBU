@@ -10,8 +10,6 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
-## [1.0.0] - 2026-11-15
-
 ### Added
 
 - First release of the Biathlon IBU integration, built from the official
@@ -37,5 +35,4 @@ the notes of the version's GitHub Release.
 - `SECURITY.md`, `CLAUDE.md`, CI (format, lint, tests on Node 22 and 24, Docker
   build), multi-arch image release and GitHub Releases.
 
-[Unreleased]: https://github.com/gboulvin/Gladys-IBU/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/gboulvin/Gladys-IBU/releases/tag/v1.0.0
+[Unreleased]: https://github.com/gboulvin/Gladys-IBU/commits/main
