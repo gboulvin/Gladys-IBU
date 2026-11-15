@@ -10,6 +10,14 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+### Fixed
+
+- Adding a device failed with "HTTP 422 — t_device_feature.min cannot be
+  null": the text features (next race, last winner, leader, last result) now
+  declare their `min` and `max`.
+- The IBU API key is cleaned when pasted with its header name (`apikey: …`),
+  quotes, spaces or a line break, which made the IBU API answer 401.
+
 ## [1.0.0] - 2026-11-15
 
 ### Added

@@ -25,6 +25,20 @@ test('Gladys accepts the discovered devices', async () => {
   assert.ok(devices.some((d) => d.name === 'Biathlete Emilien Jacquelin'));
 });
 
+test('every feature declares a numeric min and max (NOT NULL columns in Gladys)', async () => {
+  // The fake Gladys accepts a feature without min/max, the real core answers
+  // 422 "t_device_feature.min cannot be null" when the user creates the device.
+  const gladys = createFakeGladys();
+  const { service, config } = await refreshedService();
+  for (const device of buildDevices(gladys, config, service)) {
+    for (const feature of device.features) {
+      assert.ok(Number.isFinite(feature.min), `${feature.external_id}: min`);
+      assert.ok(Number.isFinite(feature.max), `${feature.external_id}: max`);
+      assert.ok(feature.min <= feature.max, `${feature.external_id}: min <= max`);
+    }
+  }
+});
+
 test('device names follow the configured language', async () => {
   const gladys = createFakeGladys();
   const { service, config } = await refreshedService();

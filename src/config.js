@@ -53,6 +53,19 @@ export function parseAthleteIds(raw) {
   return [...new Set(ids)].slice(0, 20);
 }
 
+/**
+ * The key is copied by hand from the browser developer tools: accept what
+ * comes along with it — the header name ("apikey: ..."), quotes, spaces or a
+ * line break — and keep only the value.
+ */
+export function cleanApiKey(raw) {
+  return String(raw ?? '')
+    .trim()
+    .replace(/^apikey\s*[:=]\s*/i, '')
+    .replace(/^["'\s]+|["'\s]+$/g, '')
+    .replace(/\s+/g, '');
+}
+
 function clampNumber(value, fallback, min, max) {
   const number = Number(value);
   if (!Number.isFinite(number)) {
@@ -80,7 +93,7 @@ export function normalizeConfig(raw = {}) {
   return {
     ...DEFAULT_CONFIG,
     ...raw,
-    api_key: String(raw.api_key ?? '').trim(),
+    api_key: cleanApiKey(raw.api_key),
     athletes: String(raw.athletes ?? ''),
     athleteIds: parseAthleteIds(raw.athletes),
     level: LEVELS.includes(level) ? level : DEFAULT_CONFIG.level,

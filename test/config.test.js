@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { DEFAULT_CONFIG, normalizeConfig, parseAthleteIds } from '../src/config.js';
+import { DEFAULT_CONFIG, cleanApiKey, normalizeConfig, parseAthleteIds } from '../src/config.js';
 import { CONFIG_ACTIONS } from '../src/actions.js';
 import { FOLLOWED } from './fixtures.js';
 import { createService } from './helpers.js';
@@ -64,4 +64,19 @@ test('configuration buttons explain a missing or refused key', async () => {
   const refused = createService({ overrides: { Events: 401 } });
   const refusal = await CONFIG_ACTIONS.test_connection(refused);
   assert.match(refusal.fr, /401/);
+});
+
+test('the API key keeps only its value when pasted with its header or quotes', () => {
+  const key = '0a1b2c3d-1111-2222-3333-444455556666';
+  for (const pasted of [
+    key,
+    ` ${key}\n`,
+    `apikey: ${key}`,
+    `APIKEY:${key}`,
+    `"${key}"`,
+    `'${key}'`,
+  ]) {
+    assert.equal(cleanApiKey(pasted), key, JSON.stringify(pasted));
+  }
+  assert.equal(cleanApiKey(undefined), '');
 });

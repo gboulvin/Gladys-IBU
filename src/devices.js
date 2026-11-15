@@ -64,6 +64,10 @@ const textFeature = (name, externalId) => ({
   external_id: externalId,
   category: DEVICE_FEATURE_CATEGORIES.TEXT,
   type: DEVICE_FEATURE_TYPES.TEXT.TEXT,
+  // Gladys stores min/max as NOT NULL columns for every feature (a text one
+  // included): without them the device creation fails with a 422.
+  min: 0,
+  max: 0,
   read_only: true,
   has_feedback: false,
   keep_history: false,
