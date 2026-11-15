@@ -66,9 +66,11 @@ Relays are left out: their spare rounds do not compare.
   shortly before the start and a **LIVE** badge while a race runs. Settings:
   gender, number of races.
 - **Biathlon standings** — overall, sprint, pursuit, individual, mass start or
-  nations cup, men or women, followed athletes in green.
-- **Biathlete** — one followed athlete: rank, points, shooting gauge, prone
-  and standing accuracy, last race.
+  nations cup, men or women, podium, top 5 or top 10, followed athletes in
+  green.
+- **Biathlete** — one followed athlete, chosen by typing part of their name
+  or their IBU ID (empty: the first followed athlete): rank, points, shooting
+  gauge, prone and standing accuracy, last race.
 - **Last biathlon results** — podium of the last race, and where your
   followed athletes finished.
 

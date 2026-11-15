@@ -10,6 +10,16 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+### Changed
+
+- Standings widget: the number of athletes is now a list to pick from
+  (podium, top 5, top 10). A widget list holds 10 rows at most.
+- Athlete widget: the athlete is now typed (part of the name or the IBU ID,
+  case and accents ignored; empty shows the first followed athlete) instead of
+  picked in a list that also offered the calendar and standings devices.
+  An athlete widget created with 1.0 shows the first followed athlete until its
+  athlete is typed in its settings.
+
 ## [1.0.1] - 2026-11-15
 
 ### Fixed

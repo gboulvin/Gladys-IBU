@@ -1701,17 +1701,50 @@
         },
         {
           "key": "count",
-          "type": "number",
+          "type": "select",
           "label": {
-            "en": "Number of rows",
-            "fr": "Nombre de lignes",
-            "de": "Anzahl der Zeilen",
-            "es": "Número de filas"
+            "en": "Number of athletes",
+            "fr": "Nombre d'athlètes",
+            "de": "Anzahl der Athleten",
+            "es": "Número de atletas"
+          },
+          "description": {
+            "en": "10 at most: the size of a widget list.",
+            "fr": "10 au maximum : la taille d'une liste de widget.",
+            "de": "Höchstens 10: die Größe einer Widget-Liste.",
+            "es": "10 como máximo: el tamaño de una lista de widget."
           },
           "required": false,
-          "default": 10,
-          "min": 1,
-          "max": 10
+          "default": "10",
+          "options": [
+            {
+              "value": "3",
+              "label": {
+                "en": "Podium (3)",
+                "fr": "Podium (3)",
+                "de": "Podium (3)",
+                "es": "Podio (3)"
+              }
+            },
+            {
+              "value": "5",
+              "label": {
+                "en": "Top 5",
+                "fr": "Top 5",
+                "de": "Top 5",
+                "es": "Top 5"
+              }
+            },
+            {
+              "value": "10",
+              "label": {
+                "en": "Top 10",
+                "fr": "Top 10",
+                "de": "Top 10",
+                "es": "Top 10"
+              }
+            }
+          ]
         }
       ]
     },
@@ -1732,16 +1765,27 @@
       "icon": "user",
       "settings": [
         {
-          "key": "athlete",
-          "type": "select",
-          "source": "devices",
+          "key": "athlete_name",
+          "type": "string",
           "label": {
-            "en": "Athlete",
-            "fr": "Athlète",
-            "de": "Athlet",
-            "es": "Atleta"
+            "en": "Athlete (name or IBU ID)",
+            "fr": "Athlète (nom ou IBU ID)",
+            "de": "Athlet (Name oder IBU-ID)",
+            "es": "Atleta (nombre o IBU ID)"
           },
-          "required": true
+          "description": {
+            "en": "One of the followed athletes. Empty: the first followed athlete.",
+            "fr": "Un des athlètes suivis. Vide : le premier athlète suivi.",
+            "de": "Einer der verfolgten Athleten. Leer: der erste verfolgte Athlet.",
+            "es": "Uno de los atletas seguidos. Vacío: el primer atleta seguido."
+          },
+          "placeholder": {
+            "en": "e.g. Jacquelin",
+            "fr": "ex. Jacquelin",
+            "de": "z. B. Preuss",
+            "es": "p. ej. Jacquelin"
+          },
+          "required": false
         }
       ]
     },

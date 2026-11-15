@@ -70,9 +70,11 @@ relais sont exclus : leurs balles de pioche ne sont pas comparables.
   heure, un badge peu avant le départ et un badge **EN DIRECT** pendant la
   course. Réglages : catégorie, nombre de courses.
 - **Classement biathlon** — général, sprint, poursuite, individuel, mass start
-  ou coupe des nations, hommes ou femmes, athlètes suivis en vert.
-- **Biathlète** — un athlète suivi : rang, points, jauge de tir, réussite
-  couché et debout, dernière course.
+  ou coupe des nations, hommes ou femmes, podium, top 5 ou top 10, athlètes
+  suivis en vert.
+- **Biathlète** — un athlète suivi, choisi en tapant une partie de son nom ou
+  son IBU ID (vide : le premier athlète suivi) : rang, points, jauge de tir,
+  réussite couché et debout, dernière course.
 - **Derniers résultats de biathlon** — podium de la dernière course et places
   de vos athlètes suivis.
 

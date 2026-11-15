@@ -393,6 +393,23 @@ export class BiathlonService {
     return this.athletes.get(ibuId) ?? null;
   }
 
+  /**
+   * A followed athlete from what a user typed: an IBU ID, or a part of the
+   * name (case and accents ignored). Empty: the first followed athlete.
+   */
+  findAthlete(query) {
+    const followed = this.config.athleteIds.map((id) => this.athlete(id)).filter(Boolean);
+    const text = fold(query);
+    if (!text) {
+      return followed[0] ?? null;
+    }
+    return (
+      followed.find((athlete) => fold(athlete.ibuId) === text) ??
+      followed.find((athlete) => fold(athlete.name).includes(text)) ??
+      null
+    );
+  }
+
   async searchAthletes(name) {
     const [family, ...given] = String(name).trim().split(/\s+/);
     return normalizeSearch(await this.client.searchAthletes(family, given.join(' ')));
@@ -405,6 +422,17 @@ export class BiathlonService {
     await this.client.events(picked.schedule, this.config.level);
     return { count: Array.isArray(seasons) ? seasons.length : 0, label: picked.label };
   }
+}
+
+/** Lower case, no accents, single spaces: "Bø  " -> "bo". */
+function fold(value) {
+  return String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ø/gi, 'o')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
 }
 
 function raceResultsEvent(race, results) {

@@ -25,11 +25,14 @@ const CASES = [
   [WIDGET_KEYS.NEXT_RACES, { gender: 'men', count: 8 }],
   [WIDGET_KEYS.NEXT_RACES, { gender: 'mixed' }],
   [WIDGET_KEYS.STANDINGS, {}],
-  [WIDGET_KEYS.STANDINGS, { gender: 'women', cup: 'overall', count: 3 }],
+  [WIDGET_KEYS.STANDINGS, { gender: 'women', cup: 'overall', count: '3' }],
   [WIDGET_KEYS.STANDINGS, { gender: 'men', cup: 'sprint' }],
   [WIDGET_KEYS.STANDINGS, { gender: 'men', cup: 'nations' }],
   [WIDGET_KEYS.ATHLETE, { athlete: athleteIds(gladys, FOLLOWED).device }],
   [WIDGET_KEYS.ATHLETE, { athlete: calendarIds(gladys).device }],
+  [WIDGET_KEYS.ATHLETE, { athlete_name: 'jacquelin' }],
+  [WIDGET_KEYS.ATHLETE, { athlete_name: 'Nobody' }],
+  [WIDGET_KEYS.ATHLETE, {}],
   [WIDGET_KEYS.LAST_RESULTS, {}],
   [WIDGET_KEYS.LAST_RESULTS, { gender: 'women' }],
 ];
@@ -87,6 +90,34 @@ test('the athlete widget shows rank, points and shooting', async () => {
   assert.equal(gauge.value, 90);
   const rank = content.components.find((c) => c.type === 'value');
   assert.equal(rank.value, 2);
+});
+
+test('the standings widget shows the chosen number of athletes', async () => {
+  const context = await refreshedService();
+  for (const [count, rows] of [
+    ['3', 3],
+    ['5', 3],
+    ['10', 3],
+    [undefined, 3],
+  ]) {
+    const content = await getContent(WIDGET_KEYS.STANDINGS, context, { gender: 'men', count });
+    const status = content.components.find((c) => c.type === 'status');
+    assert.equal(status.items.length, Math.min(rows, Number(count ?? 10)), String(count));
+  }
+  const podium = await getContent(WIDGET_KEYS.STANDINGS, context, { gender: 'women', count: '1' });
+  assert.equal(podium.components.find((c) => c.type === 'status').items.length, 1);
+});
+
+test('the athlete widget finds the athlete by name or IBU ID', async () => {
+  const context = await refreshedService();
+  const heading = async (settings) =>
+    (await getContent(WIDGET_KEYS.ATHLETE, context, settings)).components[0].text;
+  assert.equal(await heading({ athlete_name: 'jacquelin' }), 'Emilien Jacquelin (FRA)');
+  assert.equal(await heading({ athlete_name: ' Laegreid ' }), 'Sturla Holm Laegreid (NOR)');
+  assert.equal(await heading({ athlete_name: FOLLOWED.toLowerCase() }), 'Emilien Jacquelin (FRA)');
+  assert.equal(await heading({}), 'Emilien Jacquelin (FRA)', 'empty: first followed athlete');
+  const unknown = await heading({ athlete_name: 'Nobody' });
+  assert.match(unknown.fr, /pas suivi/);
 });
 
 test('the refresh button refreshes and answers a short toast', async () => {

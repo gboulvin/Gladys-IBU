@@ -65,9 +65,11 @@ relevos quedan excluidos (cartuchos de reserva).
 - **Próximas carreras de biatlón** — fecha y hora, un aviso poco antes de la
   salida y **EN DIRECTO** durante la carrera.
 - **Clasificación de biatlón** — general, sprint, persecución, individual,
-  salida en masa o copa de naciones, atletas seguidos en verde.
-- **Biatleta** — puesto, puntos, precisión de tiro, tendido y de pie, última
-  carrera.
+  salida en masa o copa de naciones, podio, top 5 o top 10, atletas seguidos
+  en verde.
+- **Biatleta** — un atleta seguido, elegido escribiendo parte de su nombre o
+  su IBU ID (vacío: el primer atleta seguido): puesto, puntos, precisión de
+  tiro, tendido y de pie, última carrera.
 - **Últimos resultados de biatlón** — podio de la última carrera y puestos de
   los atletas seguidos.
 

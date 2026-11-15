@@ -187,8 +187,12 @@ export const WIDGETS = {
     async get(gladys, { settings = {}, service }) {
       const empty = unavailable(service);
       if (empty) return empty;
-      const ibuId = ibuIdOfDevice(gladys, settings.athlete);
-      const athlete = ibuId ? service.athlete(ibuId) : null;
+      // `athlete` (a device external id) is the setting of version 1.0: the
+      // device picker listed every device, the name field replaced it.
+      const legacyId = ibuIdOfDevice(gladys, settings.athlete);
+      const athlete = legacyId
+        ? service.athlete(legacyId)
+        : service.findAthlete(settings.athlete_name);
       if (!athlete) {
         return messageContent(t('unknown_athlete'));
       }

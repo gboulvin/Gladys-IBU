@@ -65,9 +65,10 @@ Staffeln sind ausgenommen (Nachladepatronen).
 - **Nächste Biathlonrennen** — Datum und Uhrzeit, ein Hinweis kurz vor dem
   Start und **LIVE** während des Rennens.
 - **Biathlon-Wertung** — Gesamt, Sprint, Verfolgung, Einzel, Massenstart oder
-  Nationencup, verfolgte Athleten in Grün.
-- **Biathlet** — Platz, Punkte, Trefferquote, liegend und stehend, letztes
-  Rennen.
+  Nationencup, Podium, Top 5 oder Top 10, verfolgte Athleten in Grün.
+- **Biathlet** — ein verfolgter Athlet, gewählt über einen Teil seines Namens
+  oder seine IBU-ID (leer: der erste verfolgte Athlet): Platz, Punkte,
+  Trefferquote, liegend und stehend, letztes Rennen.
 - **Letzte Biathlon-Ergebnisse** — Podium des letzten Rennens und Plätze der
   verfolgten Athleten.
 
