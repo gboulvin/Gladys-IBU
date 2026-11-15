@@ -1,6 +1,6 @@
 {
   "name": "gladys-ibu",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "private": true,
   "description": "Gladys Assistant external integration: IBU biathlon races, standings, results and shooting statistics.",
   "type": "module",
