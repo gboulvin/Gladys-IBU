@@ -1,0 +1,1817 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "Biathlon IBU",
+  "description": {
+    "en": "IBU biathlon: next races, World Cup standings, results and shooting stats.",
+    "fr": "Biathlon IBU : prochaines courses, classements, résultats et statistiques de tir.",
+    "de": "IBU-Biathlon: nächste Rennen, Weltcup-Wertungen, Ergebnisse und Schießstatistik.",
+    "es": "Biatlón IBU: próximas carreras, clasificaciones, resultados y estadísticas de tiro."
+  },
+  "version": "1.0.0",
+  "docker_image": "ghcr.io/gboulvin/gladys-ibu:1.0.0",
+  "gladys_version": ">=5.1.0",
+  "cover_image": "https://raw.githubusercontent.com/gboulvin/Gladys-IBU/main/cover.png",
+  "categories": ["services", "multimedia"],
+  "transports": ["cloud"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Getting an IBU API key",
+        "fr": "Obtenir une clé d'API IBU",
+        "de": "Einen IBU-API-Schlüssel erhalten",
+        "es": "Obtener una clave de API de la IBU"
+      },
+      "description": {
+        "en": "The IBU datacenter (biathlonresults.com) requires an API key. Ask the IBU for a personal key, or reuse the key of the public website: open biathlonresults.com in a desktop browser, press F12, open the Network tab, reload the page, click a request to \"sportapi\" and copy the value of its \"apikey\" request header. See the documentation for details.",
+        "fr": "Le datacenter IBU (biathlonresults.com) exige une clé d'API. Demandez une clé personnelle à l'IBU, ou réutilisez la clé du site public : ouvrez biathlonresults.com dans un navigateur d'ordinateur, appuyez sur F12, ouvrez l'onglet Réseau, rechargez la page, cliquez sur une requête vers « sportapi » et copiez la valeur de son en-tête « apikey ». Détails dans la documentation.",
+        "de": "Das IBU-Datacenter (biathlonresults.com) benötigt einen API-Schlüssel. Fordern Sie bei der IBU einen persönlichen Schlüssel an oder verwenden Sie den Schlüssel der öffentlichen Website: Öffnen Sie biathlonresults.com in einem Desktop-Browser, drücken Sie F12, öffnen Sie den Tab Netzwerk, laden Sie die Seite neu, klicken Sie auf eine Anfrage an „sportapi“ und kopieren Sie den Wert ihres Headers „apikey“. Details in der Dokumentation.",
+        "es": "El datacenter de la IBU (biathlonresults.com) exige una clave de API. Pida una clave personal a la IBU, o reutilice la clave del sitio público: abra biathlonresults.com en un navegador de escritorio, pulse F12, abra la pestaña Red, recargue la página, haga clic en una petición a «sportapi» y copie el valor de su cabecera «apikey». Detalles en la documentación."
+      },
+      "links": [
+        {
+          "url": "https://www.biathlonresults.com",
+          "label": {
+            "en": "IBU datacenter",
+            "fr": "Datacenter IBU",
+            "de": "IBU-Datacenter",
+            "es": "Datacenter de la IBU"
+          }
+        },
+        {
+          "url": "https://www.biathlonworld.com/contact",
+          "label": {
+            "en": "Contact the IBU",
+            "fr": "Contacter l'IBU",
+            "de": "IBU kontaktieren",
+            "es": "Contactar con la IBU"
+          }
+        }
+      ]
+    },
+    {
+      "key": "api_key",
+      "type": "secret",
+      "label": {
+        "en": "IBU API key",
+        "fr": "Clé d'API IBU",
+        "de": "IBU-API-Schlüssel",
+        "es": "Clave de API de la IBU"
+      },
+      "description": {
+        "en": "Sent only to biathlonresults.com, as the \"apikey\" header.",
+        "fr": "Envoyée uniquement à biathlonresults.com, dans l'en-tête « apikey ».",
+        "de": "Wird nur an biathlonresults.com gesendet, im Header „apikey“.",
+        "es": "Se envía solo a biathlonresults.com, en la cabecera «apikey»."
+      },
+      "required": true
+    },
+    {
+      "key": "athletes",
+      "type": "string",
+      "label": {
+        "en": "Followed athletes",
+        "fr": "Athlètes suivis",
+        "de": "Verfolgte Athleten",
+        "es": "Atletas seguidos"
+      },
+      "description": {
+        "en": "IBU IDs separated by commas (20 at most). Use the \"Find an athlete\" button below to get them.",
+        "fr": "IBU ID séparés par des virgules (20 au maximum). Utilisez le bouton « Trouver un athlète » ci-dessous pour les obtenir.",
+        "de": "IBU-IDs durch Kommas getrennt (höchstens 20). Verwenden Sie die Schaltfläche „Athlet suchen“ unten.",
+        "es": "IBU ID separados por comas (20 como máximo). Use el botón «Buscar un atleta» de abajo para obtenerlos."
+      },
+      "placeholder": {
+        "en": "e.g. BTFRA21503199701",
+        "fr": "ex. BTFRA21503199701",
+        "de": "z. B. BTFRA21503199701",
+        "es": "p. ej. BTFRA21503199701"
+      },
+      "required": false,
+      "default": ""
+    },
+    {
+      "key": "level",
+      "type": "select",
+      "label": {
+        "en": "Competition level",
+        "fr": "Niveau de compétition",
+        "de": "Wettkampfebene",
+        "es": "Nivel de competición"
+      },
+      "required": false,
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": {
+            "en": "World Cup / Championships",
+            "fr": "Coupe du monde / Championnats",
+            "de": "Weltcup / Weltmeisterschaften",
+            "es": "Copa del Mundo / Campeonatos"
+          }
+        },
+        {
+          "value": "2",
+          "label": {
+            "en": "IBU Cup",
+            "fr": "IBU Cup",
+            "de": "IBU-Cup",
+            "es": "IBU Cup"
+          }
+        },
+        {
+          "value": "3",
+          "label": {
+            "en": "Junior",
+            "fr": "Junior",
+            "de": "Junioren",
+            "es": "Júnior"
+          }
+        }
+      ]
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "label": {
+        "en": "Language of the device texts",
+        "fr": "Langue des textes des appareils",
+        "de": "Sprache der Gerätetexte",
+        "es": "Idioma de los textos de los dispositivos"
+      },
+      "description": {
+        "en": "Widgets follow the language of each user; device states and scene variables use this one.",
+        "fr": "Les widgets suivent la langue de chaque utilisateur ; les états des appareils et les variables de scène utilisent celle-ci.",
+        "de": "Widgets folgen der Sprache jedes Benutzers; Gerätezustände und Szenenvariablen verwenden diese.",
+        "es": "Los widgets siguen el idioma de cada usuario; los estados y las variables de escena usan este."
+      },
+      "required": false,
+      "default": "en",
+      "options": [
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "Anglais",
+            "de": "Englisch",
+            "es": "Inglés"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "French",
+            "fr": "Français",
+            "de": "Französisch",
+            "es": "Francés"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "German",
+            "fr": "Allemand",
+            "de": "Deutsch",
+            "es": "Alemán"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Spanish",
+            "fr": "Espagnol",
+            "de": "Spanisch",
+            "es": "Español"
+          }
+        }
+      ]
+    },
+    {
+      "key": "timezone",
+      "type": "string",
+      "label": {
+        "en": "Time zone",
+        "fr": "Fuseau horaire",
+        "de": "Zeitzone",
+        "es": "Zona horaria"
+      },
+      "description": {
+        "en": "IANA time zone of the displayed start times.",
+        "fr": "Fuseau horaire IANA des heures de départ affichées.",
+        "de": "IANA-Zeitzone der angezeigten Startzeiten.",
+        "es": "Zona horaria IANA de las horas de salida mostradas."
+      },
+      "placeholder": {
+        "en": "e.g. Europe/Paris",
+        "fr": "ex. Europe/Paris",
+        "de": "z. B. Europe/Berlin",
+        "es": "p. ej. Europe/Madrid"
+      },
+      "required": false,
+      "default": "Europe/Paris"
+    },
+    {
+      "key": "refresh_interval",
+      "type": "number",
+      "label": {
+        "en": "Refresh interval (min)",
+        "fr": "Intervalle de rafraîchissement (min)",
+        "de": "Aktualisierungsintervall (Min.)",
+        "es": "Intervalo de actualización (min)"
+      },
+      "description": {
+        "en": "How often the IBU data is read, in minutes (5 minimum).",
+        "fr": "Fréquence de lecture des données IBU, en minutes (5 minimum).",
+        "de": "Wie oft die IBU-Daten gelesen werden, in Minuten (mindestens 5).",
+        "es": "Frecuencia de lectura de los datos de la IBU, en minutos (mínimo 5)."
+      },
+      "required": false,
+      "default": 15,
+      "min": 5,
+      "max": 240
+    },
+    {
+      "key": "reminder_minutes",
+      "type": "number",
+      "label": {
+        "en": "Race reminder (min)",
+        "fr": "Rappel avant course (min)",
+        "de": "Rennerinnerung (Min.)",
+        "es": "Aviso antes de carrera (min)"
+      },
+      "description": {
+        "en": "Minutes before the start at which the \"Race starting soon\" trigger fires.",
+        "fr": "Minutes avant le départ auxquelles le déclencheur « Course bientôt au départ » se déclenche.",
+        "de": "Minuten vor dem Start, zu denen der Auslöser „Rennen startet bald“ auslöst.",
+        "es": "Minutos antes de la salida en que se activa el disparador «Carrera a punto de empezar»."
+      },
+      "required": false,
+      "default": 30,
+      "min": 1,
+      "max": 1440
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "label": {
+        "en": "Test the IBU connection",
+        "fr": "Tester la connexion IBU",
+        "de": "IBU-Verbindung testen",
+        "es": "Probar la conexión IBU"
+      },
+      "timeout_seconds": 30
+    },
+    {
+      "key": "refresh_now",
+      "label": {
+        "en": "Refresh now",
+        "fr": "Actualiser maintenant",
+        "de": "Jetzt aktualisieren",
+        "es": "Actualizar ahora"
+      },
+      "timeout_seconds": 120
+    },
+    {
+      "key": "search_athlete",
+      "label": {
+        "en": "Find an athlete",
+        "fr": "Trouver un athlète",
+        "de": "Athlet suchen",
+        "es": "Buscar un atleta"
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "name",
+          "type": "string",
+          "label": {
+            "en": "Family name (and given name)",
+            "fr": "Nom (et prénom)",
+            "de": "Nachname (und Vorname)",
+            "es": "Apellido (y nombre)"
+          },
+          "placeholder": {
+            "en": "e.g. Jeanmonnot",
+            "fr": "ex. Jeanmonnot",
+            "de": "z. B. Preuss",
+            "es": "p. ej. Jeanmonnot"
+          },
+          "required": true
+        }
+      ]
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "race_starting_soon",
+      "label": {
+        "en": "Biathlon race starting soon",
+        "fr": "Course de biathlon bientôt au départ",
+        "de": "Biathlonrennen startet bald",
+        "es": "Carrera de biatlón a punto de empezar"
+      },
+      "description": {
+        "en": "A race starts within the reminder delay of the configuration.",
+        "fr": "Une course part dans le délai de rappel de la configuration.",
+        "de": "Ein Rennen startet innerhalb der konfigurierten Erinnerungszeit.",
+        "es": "Una carrera empieza dentro del plazo de aviso configurado."
+      },
+      "fields": [
+        {
+          "key": "gender",
+          "type": "multi_select",
+          "label": {
+            "en": "Gender",
+            "fr": "Catégorie",
+            "de": "Kategorie",
+            "es": "Categoría"
+          },
+          "options": [
+            {
+              "value": "men",
+              "label": {
+                "en": "Men",
+                "fr": "Hommes",
+                "de": "Herren",
+                "es": "Hombres"
+              }
+            },
+            {
+              "value": "women",
+              "label": {
+                "en": "Women",
+                "fr": "Femmes",
+                "de": "Damen",
+                "es": "Mujeres"
+              }
+            },
+            {
+              "value": "mixed",
+              "label": {
+                "en": "Mixed",
+                "fr": "Mixte",
+                "de": "Mixed",
+                "es": "Mixto"
+              }
+            }
+          ]
+        },
+        {
+          "key": "discipline",
+          "type": "multi_select",
+          "label": {
+            "en": "Discipline",
+            "fr": "Discipline",
+            "de": "Disziplin",
+            "es": "Disciplina"
+          },
+          "options": [
+            {
+              "value": "sprint",
+              "label": {
+                "en": "Sprint",
+                "fr": "Sprint",
+                "de": "Sprint",
+                "es": "Sprint"
+              }
+            },
+            {
+              "value": "pursuit",
+              "label": {
+                "en": "Pursuit",
+                "fr": "Poursuite",
+                "de": "Verfolgung",
+                "es": "Persecución"
+              }
+            },
+            {
+              "value": "individual",
+              "label": {
+                "en": "Individual",
+                "fr": "Individuel",
+                "de": "Einzel",
+                "es": "Individual"
+              }
+            },
+            {
+              "value": "short_individual",
+              "label": {
+                "en": "Short individual",
+                "fr": "Individuel court",
+                "de": "Verkürztes Einzel",
+                "es": "Individual corto"
+              }
+            },
+            {
+              "value": "mass_start",
+              "label": {
+                "en": "Mass start",
+                "fr": "Mass start",
+                "de": "Massenstart",
+                "es": "Salida en masa"
+              }
+            },
+            {
+              "value": "relay",
+              "label": {
+                "en": "Relay",
+                "fr": "Relais",
+                "de": "Staffel",
+                "es": "Relevo"
+              }
+            },
+            {
+              "value": "mixed_relay",
+              "label": {
+                "en": "Mixed relay",
+                "fr": "Relais mixte",
+                "de": "Mixed-Staffel",
+                "es": "Relevo mixto"
+              }
+            },
+            {
+              "value": "single_mixed_relay",
+              "label": {
+                "en": "Single mixed relay",
+                "fr": "Relais mixte simple",
+                "de": "Single-Mixed-Staffel",
+                "es": "Relevo mixto simple"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "race",
+          "type": "string",
+          "label": {
+            "en": "Race",
+            "fr": "Course",
+            "de": "Rennen",
+            "es": "Carrera"
+          }
+        },
+        {
+          "key": "location",
+          "type": "string",
+          "label": {
+            "en": "Venue",
+            "fr": "Lieu",
+            "de": "Austragungsort",
+            "es": "Sede"
+          }
+        },
+        {
+          "key": "start_time",
+          "type": "string",
+          "label": {
+            "en": "Start time (ISO)",
+            "fr": "Heure de départ (ISO)",
+            "de": "Startzeit (ISO)",
+            "es": "Hora de salida (ISO)"
+          }
+        },
+        {
+          "key": "start_time_local",
+          "type": "string",
+          "label": {
+            "en": "Start time",
+            "fr": "Heure de départ",
+            "de": "Startzeit",
+            "es": "Hora de salida"
+          }
+        },
+        {
+          "key": "minutes",
+          "type": "number",
+          "label": {
+            "en": "Minutes to start",
+            "fr": "Minutes avant le départ",
+            "de": "Minuten bis zum Start",
+            "es": "Minutos hasta la salida"
+          }
+        },
+        {
+          "key": "gender",
+          "type": "string",
+          "label": {
+            "en": "Gender",
+            "fr": "Catégorie",
+            "de": "Kategorie",
+            "es": "Categoría"
+          }
+        },
+        {
+          "key": "discipline",
+          "type": "string",
+          "label": {
+            "en": "Discipline",
+            "fr": "Discipline",
+            "de": "Disziplin",
+            "es": "Disciplina"
+          }
+        }
+      ]
+    },
+    {
+      "key": "race_results",
+      "label": {
+        "en": "Biathlon race results",
+        "fr": "Résultats d'une course de biathlon",
+        "de": "Ergebnisse eines Biathlonrennens",
+        "es": "Resultados de una carrera de biatlón"
+      },
+      "description": {
+        "en": "The results of a race are available.",
+        "fr": "Les résultats d'une course sont disponibles.",
+        "de": "Die Ergebnisse eines Rennens sind verfügbar.",
+        "es": "Los resultados de una carrera están disponibles."
+      },
+      "fields": [
+        {
+          "key": "gender",
+          "type": "multi_select",
+          "label": {
+            "en": "Gender",
+            "fr": "Catégorie",
+            "de": "Kategorie",
+            "es": "Categoría"
+          },
+          "options": [
+            {
+              "value": "men",
+              "label": {
+                "en": "Men",
+                "fr": "Hommes",
+                "de": "Herren",
+                "es": "Hombres"
+              }
+            },
+            {
+              "value": "women",
+              "label": {
+                "en": "Women",
+                "fr": "Femmes",
+                "de": "Damen",
+                "es": "Mujeres"
+              }
+            },
+            {
+              "value": "mixed",
+              "label": {
+                "en": "Mixed",
+                "fr": "Mixte",
+                "de": "Mixed",
+                "es": "Mixto"
+              }
+            }
+          ]
+        },
+        {
+          "key": "discipline",
+          "type": "multi_select",
+          "label": {
+            "en": "Discipline",
+            "fr": "Discipline",
+            "de": "Disziplin",
+            "es": "Disciplina"
+          },
+          "options": [
+            {
+              "value": "sprint",
+              "label": {
+                "en": "Sprint",
+                "fr": "Sprint",
+                "de": "Sprint",
+                "es": "Sprint"
+              }
+            },
+            {
+              "value": "pursuit",
+              "label": {
+                "en": "Pursuit",
+                "fr": "Poursuite",
+                "de": "Verfolgung",
+                "es": "Persecución"
+              }
+            },
+            {
+              "value": "individual",
+              "label": {
+                "en": "Individual",
+                "fr": "Individuel",
+                "de": "Einzel",
+                "es": "Individual"
+              }
+            },
+            {
+              "value": "short_individual",
+              "label": {
+                "en": "Short individual",
+                "fr": "Individuel court",
+                "de": "Verkürztes Einzel",
+                "es": "Individual corto"
+              }
+            },
+            {
+              "value": "mass_start",
+              "label": {
+                "en": "Mass start",
+                "fr": "Mass start",
+                "de": "Massenstart",
+                "es": "Salida en masa"
+              }
+            },
+            {
+              "value": "relay",
+              "label": {
+                "en": "Relay",
+                "fr": "Relais",
+                "de": "Staffel",
+                "es": "Relevo"
+              }
+            },
+            {
+              "value": "mixed_relay",
+              "label": {
+                "en": "Mixed relay",
+                "fr": "Relais mixte",
+                "de": "Mixed-Staffel",
+                "es": "Relevo mixto"
+              }
+            },
+            {
+              "value": "single_mixed_relay",
+              "label": {
+                "en": "Single mixed relay",
+                "fr": "Relais mixte simple",
+                "de": "Single-Mixed-Staffel",
+                "es": "Relevo mixto simple"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "race",
+          "type": "string",
+          "label": {
+            "en": "Race",
+            "fr": "Course",
+            "de": "Rennen",
+            "es": "Carrera"
+          }
+        },
+        {
+          "key": "location",
+          "type": "string",
+          "label": {
+            "en": "Venue",
+            "fr": "Lieu",
+            "de": "Austragungsort",
+            "es": "Sede"
+          }
+        },
+        {
+          "key": "start_time",
+          "type": "string",
+          "label": {
+            "en": "Start time (ISO)",
+            "fr": "Heure de départ (ISO)",
+            "de": "Startzeit (ISO)",
+            "es": "Hora de salida (ISO)"
+          }
+        },
+        {
+          "key": "start_time_local",
+          "type": "string",
+          "label": {
+            "en": "Start time",
+            "fr": "Heure de départ",
+            "de": "Startzeit",
+            "es": "Hora de salida"
+          }
+        },
+        {
+          "key": "winner",
+          "type": "string",
+          "label": {
+            "en": "Winner",
+            "fr": "Vainqueur",
+            "de": "Sieger",
+            "es": "Ganador"
+          }
+        },
+        {
+          "key": "winner_nation",
+          "type": "string",
+          "label": {
+            "en": "Winner's nation",
+            "fr": "Nation du vainqueur",
+            "de": "Nation des Siegers",
+            "es": "País del ganador"
+          }
+        },
+        {
+          "key": "second",
+          "type": "string",
+          "label": {
+            "en": "Second",
+            "fr": "Deuxième",
+            "de": "Zweiter",
+            "es": "Segundo"
+          }
+        },
+        {
+          "key": "third",
+          "type": "string",
+          "label": {
+            "en": "Third",
+            "fr": "Troisième",
+            "de": "Dritter",
+            "es": "Tercero"
+          }
+        },
+        {
+          "key": "gender",
+          "type": "string",
+          "label": {
+            "en": "Gender",
+            "fr": "Catégorie",
+            "de": "Kategorie",
+            "es": "Categoría"
+          }
+        },
+        {
+          "key": "discipline",
+          "type": "string",
+          "label": {
+            "en": "Discipline",
+            "fr": "Discipline",
+            "de": "Disziplin",
+            "es": "Disciplina"
+          }
+        }
+      ]
+    },
+    {
+      "key": "athlete_result",
+      "label": {
+        "en": "Result of a followed athlete",
+        "fr": "Résultat d'un athlète suivi",
+        "de": "Ergebnis eines verfolgten Athleten",
+        "es": "Resultado de un atleta seguido"
+      },
+      "description": {
+        "en": "A followed athlete finished a race.",
+        "fr": "Un athlète suivi a terminé une course.",
+        "de": "Ein verfolgter Athlet hat ein Rennen beendet.",
+        "es": "Un atleta seguido ha terminado una carrera."
+      },
+      "fields": [
+        {
+          "key": "athlete",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Athlete",
+            "fr": "Athlète",
+            "de": "Athlet",
+            "es": "Atleta"
+          }
+        },
+        {
+          "key": "placement",
+          "type": "multi_select",
+          "label": {
+            "en": "Placement",
+            "fr": "Classement",
+            "de": "Platzierung",
+            "es": "Clasificación"
+          },
+          "options": [
+            {
+              "value": "win",
+              "label": {
+                "en": "Victory",
+                "fr": "Victoire",
+                "de": "Sieg",
+                "es": "Victoria"
+              }
+            },
+            {
+              "value": "podium",
+              "label": {
+                "en": "2nd or 3rd",
+                "fr": "2e ou 3e",
+                "de": "2. oder 3.",
+                "es": "2.º o 3.º"
+              }
+            },
+            {
+              "value": "top10",
+              "label": {
+                "en": "4th to 10th",
+                "fr": "4e à 10e",
+                "de": "4. bis 10.",
+                "es": "4.º a 10.º"
+              }
+            },
+            {
+              "value": "points",
+              "label": {
+                "en": "11th to 40th",
+                "fr": "11e à 40e",
+                "de": "11. bis 40.",
+                "es": "11.º a 40.º"
+              }
+            },
+            {
+              "value": "other",
+              "label": {
+                "en": "Beyond 40th / DNF",
+                "fr": "Au-delà de 40e / abandon",
+                "de": "Ab 41. / DNF",
+                "es": "Más allá del 40.º / abandono"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "athlete_name",
+          "type": "string",
+          "label": {
+            "en": "Athlete name",
+            "fr": "Nom de l'athlète",
+            "de": "Name des Athleten",
+            "es": "Nombre del atleta"
+          }
+        },
+        {
+          "key": "rank",
+          "type": "number",
+          "label": {
+            "en": "Rank",
+            "fr": "Rang",
+            "de": "Platz",
+            "es": "Puesto"
+          }
+        },
+        {
+          "key": "shootings",
+          "type": "string",
+          "label": {
+            "en": "Shooting",
+            "fr": "Tir",
+            "de": "Schießen",
+            "es": "Tiro"
+          }
+        },
+        {
+          "key": "misses",
+          "type": "number",
+          "label": {
+            "en": "Misses",
+            "fr": "Fautes",
+            "de": "Fehler",
+            "es": "Fallos"
+          }
+        },
+        {
+          "key": "behind",
+          "type": "string",
+          "label": {
+            "en": "Time behind",
+            "fr": "Retard",
+            "de": "Rückstand",
+            "es": "Diferencia"
+          }
+        },
+        {
+          "key": "placement",
+          "type": "string",
+          "label": {
+            "en": "Placement",
+            "fr": "Classement",
+            "de": "Platzierung",
+            "es": "Clasificación"
+          }
+        },
+        {
+          "key": "race",
+          "type": "string",
+          "label": {
+            "en": "Race",
+            "fr": "Course",
+            "de": "Rennen",
+            "es": "Carrera"
+          }
+        },
+        {
+          "key": "location",
+          "type": "string",
+          "label": {
+            "en": "Venue",
+            "fr": "Lieu",
+            "de": "Austragungsort",
+            "es": "Sede"
+          }
+        }
+      ]
+    },
+    {
+      "key": "leader_changed",
+      "label": {
+        "en": "New overall leader",
+        "fr": "Nouveau leader du général",
+        "de": "Neuer Gesamtführender",
+        "es": "Nuevo líder de la general"
+      },
+      "description": {
+        "en": "The leader of the overall standing changed (yellow bib).",
+        "fr": "Le leader du classement général a changé (dossard jaune).",
+        "de": "Der Führende der Gesamtwertung hat gewechselt (Gelbes Trikot).",
+        "es": "El líder de la clasificación general ha cambiado (dorsal amarillo)."
+      },
+      "fields": [
+        {
+          "key": "gender",
+          "type": "multi_select",
+          "label": {
+            "en": "Gender",
+            "fr": "Catégorie",
+            "de": "Kategorie",
+            "es": "Categoría"
+          },
+          "options": [
+            {
+              "value": "men",
+              "label": {
+                "en": "Men",
+                "fr": "Hommes",
+                "de": "Herren",
+                "es": "Hombres"
+              }
+            },
+            {
+              "value": "women",
+              "label": {
+                "en": "Women",
+                "fr": "Femmes",
+                "de": "Damen",
+                "es": "Mujeres"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "leader",
+          "type": "string",
+          "label": {
+            "en": "Leader",
+            "fr": "Leader",
+            "de": "Führender",
+            "es": "Líder"
+          }
+        },
+        {
+          "key": "leader_nation",
+          "type": "string",
+          "label": {
+            "en": "Leader's nation",
+            "fr": "Nation du leader",
+            "de": "Nation des Führenden",
+            "es": "País del líder"
+          }
+        },
+        {
+          "key": "points",
+          "type": "number",
+          "label": {
+            "en": "Points",
+            "fr": "Points",
+            "de": "Punkte",
+            "es": "Puntos"
+          }
+        },
+        {
+          "key": "previous_leader",
+          "type": "string",
+          "label": {
+            "en": "Previous leader",
+            "fr": "Leader précédent",
+            "de": "Bisheriger Führender",
+            "es": "Líder anterior"
+          }
+        },
+        {
+          "key": "gender",
+          "type": "string",
+          "label": {
+            "en": "Gender",
+            "fr": "Catégorie",
+            "de": "Kategorie",
+            "es": "Categoría"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "get_next_race",
+      "label": {
+        "en": "Get the next biathlon race",
+        "fr": "Obtenir la prochaine course de biathlon",
+        "de": "Nächstes Biathlonrennen abrufen",
+        "es": "Obtener la próxima carrera de biatlón"
+      },
+      "description": {
+        "en": "Name, venue and start time of the next race.",
+        "fr": "Nom, lieu et heure de départ de la prochaine course.",
+        "de": "Name, Ort und Startzeit des nächsten Rennens.",
+        "es": "Nombre, sede y hora de salida de la próxima carrera."
+      },
+      "timeout_seconds": 15,
+      "fields": [
+        {
+          "key": "gender",
+          "type": "select",
+          "label": {
+            "en": "Gender",
+            "fr": "Catégorie",
+            "de": "Kategorie",
+            "es": "Categoría"
+          },
+          "required": false,
+          "default": "all",
+          "options": [
+            {
+              "value": "all",
+              "label": {
+                "en": "All races",
+                "fr": "Toutes les courses",
+                "de": "Alle Rennen",
+                "es": "Todas las carreras"
+              }
+            },
+            {
+              "value": "men",
+              "label": {
+                "en": "Men",
+                "fr": "Hommes",
+                "de": "Herren",
+                "es": "Hombres"
+              }
+            },
+            {
+              "value": "women",
+              "label": {
+                "en": "Women",
+                "fr": "Femmes",
+                "de": "Damen",
+                "es": "Mujeres"
+              }
+            },
+            {
+              "value": "mixed",
+              "label": {
+                "en": "Mixed",
+                "fr": "Mixte",
+                "de": "Mixed",
+                "es": "Mixto"
+              }
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "key": "found",
+          "type": "boolean",
+          "label": {
+            "en": "Found",
+            "fr": "Trouvé",
+            "de": "Gefunden",
+            "es": "Encontrado"
+          }
+        },
+        {
+          "key": "race",
+          "type": "string",
+          "label": {
+            "en": "Race",
+            "fr": "Course",
+            "de": "Rennen",
+            "es": "Carrera"
+          }
+        },
+        {
+          "key": "location",
+          "type": "string",
+          "label": {
+            "en": "Venue",
+            "fr": "Lieu",
+            "de": "Austragungsort",
+            "es": "Sede"
+          }
+        },
+        {
+          "key": "start_time",
+          "type": "string",
+          "label": {
+            "en": "Start time (ISO)",
+            "fr": "Heure de départ (ISO)",
+            "de": "Startzeit (ISO)",
+            "es": "Hora de salida (ISO)"
+          }
+        },
+        {
+          "key": "start_time_local",
+          "type": "string",
+          "label": {
+            "en": "Start time",
+            "fr": "Heure de départ",
+            "de": "Startzeit",
+            "es": "Hora de salida"
+          }
+        },
+        {
+          "key": "minutes_until",
+          "type": "number",
+          "label": {
+            "en": "Minutes to start",
+            "fr": "Minutes avant le départ",
+            "de": "Minuten bis zum Start",
+            "es": "Minutos hasta la salida"
+          }
+        }
+      ]
+    },
+    {
+      "key": "get_athlete_stats",
+      "label": {
+        "en": "Get an athlete's statistics",
+        "fr": "Obtenir les statistiques d'un athlète",
+        "de": "Statistik eines Athleten abrufen",
+        "es": "Obtener las estadísticas de un atleta"
+      },
+      "description": {
+        "en": "Rank, points and shooting accuracy of a followed athlete.",
+        "fr": "Rang, points et réussite au tir d'un athlète suivi.",
+        "de": "Platz, Punkte und Trefferquote eines verfolgten Athleten.",
+        "es": "Puesto, puntos y precisión de tiro de un atleta seguido."
+      },
+      "timeout_seconds": 15,
+      "fields": [
+        {
+          "key": "athlete",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Athlete",
+            "fr": "Athlète",
+            "de": "Athlet",
+            "es": "Atleta"
+          },
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "key": "found",
+          "type": "boolean",
+          "label": {
+            "en": "Found",
+            "fr": "Trouvé",
+            "de": "Gefunden",
+            "es": "Encontrado"
+          }
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "label": {
+            "en": "Name",
+            "fr": "Nom",
+            "de": "Name",
+            "es": "Nombre"
+          }
+        },
+        {
+          "key": "nation",
+          "type": "string",
+          "label": {
+            "en": "Nation",
+            "fr": "Nation",
+            "de": "Nation",
+            "es": "País"
+          }
+        },
+        {
+          "key": "rank",
+          "type": "number",
+          "label": {
+            "en": "Rank",
+            "fr": "Rang",
+            "de": "Platz",
+            "es": "Puesto"
+          }
+        },
+        {
+          "key": "points",
+          "type": "number",
+          "label": {
+            "en": "Points",
+            "fr": "Points",
+            "de": "Punkte",
+            "es": "Puntos"
+          }
+        },
+        {
+          "key": "shooting_accuracy",
+          "type": "number",
+          "label": {
+            "en": "Shooting accuracy (%)",
+            "fr": "Réussite au tir (%)",
+            "de": "Trefferquote (%)",
+            "es": "Precisión de tiro (%)"
+          }
+        },
+        {
+          "key": "prone_accuracy",
+          "type": "number",
+          "label": {
+            "en": "Prone accuracy (%)",
+            "fr": "Réussite couché (%)",
+            "de": "Trefferquote liegend (%)",
+            "es": "Precisión tendido (%)"
+          }
+        },
+        {
+          "key": "standing_accuracy",
+          "type": "number",
+          "label": {
+            "en": "Standing accuracy (%)",
+            "fr": "Réussite debout (%)",
+            "de": "Trefferquote stehend (%)",
+            "es": "Precisión de pie (%)"
+          }
+        },
+        {
+          "key": "last_rank",
+          "type": "number",
+          "label": {
+            "en": "Last race rank",
+            "fr": "Rang dernière course",
+            "de": "Platz letztes Rennen",
+            "es": "Puesto última carrera"
+          }
+        },
+        {
+          "key": "last_race",
+          "type": "string",
+          "label": {
+            "en": "Last race",
+            "fr": "Dernière course",
+            "de": "Letztes Rennen",
+            "es": "Última carrera"
+          }
+        }
+      ]
+    },
+    {
+      "key": "get_standings_leader",
+      "label": {
+        "en": "Get a standings leader",
+        "fr": "Obtenir le leader d'un classement",
+        "de": "Führenden einer Wertung abrufen",
+        "es": "Obtener el líder de una clasificación"
+      },
+      "description": {
+        "en": "Leader, points and gap to the second of a standing.",
+        "fr": "Leader, points et écart avec le deuxième d'un classement.",
+        "de": "Führender, Punkte und Abstand zum Zweiten einer Wertung.",
+        "es": "Líder, puntos y diferencia con el segundo de una clasificación."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "gender",
+          "type": "select",
+          "label": {
+            "en": "Gender",
+            "fr": "Catégorie",
+            "de": "Kategorie",
+            "es": "Categoría"
+          },
+          "required": true,
+          "default": "men",
+          "options": [
+            {
+              "value": "men",
+              "label": {
+                "en": "Men",
+                "fr": "Hommes",
+                "de": "Herren",
+                "es": "Hombres"
+              }
+            },
+            {
+              "value": "women",
+              "label": {
+                "en": "Women",
+                "fr": "Femmes",
+                "de": "Damen",
+                "es": "Mujeres"
+              }
+            }
+          ]
+        },
+        {
+          "key": "cup",
+          "type": "select",
+          "label": {
+            "en": "Standing",
+            "fr": "Classement",
+            "de": "Wertung",
+            "es": "Clasificación"
+          },
+          "required": true,
+          "default": "overall",
+          "options": [
+            {
+              "value": "overall",
+              "label": {
+                "en": "Overall",
+                "fr": "Général",
+                "de": "Gesamt",
+                "es": "General"
+              }
+            },
+            {
+              "value": "sprint",
+              "label": {
+                "en": "Sprint",
+                "fr": "Sprint",
+                "de": "Sprint",
+                "es": "Sprint"
+              }
+            },
+            {
+              "value": "pursuit",
+              "label": {
+                "en": "Pursuit",
+                "fr": "Poursuite",
+                "de": "Verfolgung",
+                "es": "Persecución"
+              }
+            },
+            {
+              "value": "individual",
+              "label": {
+                "en": "Individual",
+                "fr": "Individuel",
+                "de": "Einzel",
+                "es": "Individual"
+              }
+            },
+            {
+              "value": "mass_start",
+              "label": {
+                "en": "Mass start",
+                "fr": "Mass start",
+                "de": "Massenstart",
+                "es": "Salida en masa"
+              }
+            },
+            {
+              "value": "nations",
+              "label": {
+                "en": "Nations cup",
+                "fr": "Coupe des nations",
+                "de": "Nationencup",
+                "es": "Copa de naciones"
+              }
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "key": "found",
+          "type": "boolean",
+          "label": {
+            "en": "Found",
+            "fr": "Trouvé",
+            "de": "Gefunden",
+            "es": "Encontrado"
+          }
+        },
+        {
+          "key": "leader",
+          "type": "string",
+          "label": {
+            "en": "Leader",
+            "fr": "Leader",
+            "de": "Führender",
+            "es": "Líder"
+          }
+        },
+        {
+          "key": "nation",
+          "type": "string",
+          "label": {
+            "en": "Nation",
+            "fr": "Nation",
+            "de": "Nation",
+            "es": "País"
+          }
+        },
+        {
+          "key": "points",
+          "type": "number",
+          "label": {
+            "en": "Points",
+            "fr": "Points",
+            "de": "Punkte",
+            "es": "Puntos"
+          }
+        },
+        {
+          "key": "second",
+          "type": "string",
+          "label": {
+            "en": "Second",
+            "fr": "Deuxième",
+            "de": "Zweiter",
+            "es": "Segundo"
+          }
+        },
+        {
+          "key": "gap",
+          "type": "number",
+          "label": {
+            "en": "Gap to second (points)",
+            "fr": "Écart avec le 2e (points)",
+            "de": "Abstand zum 2. (Punkte)",
+            "es": "Diferencia con el 2.º (puntos)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "refresh_data",
+      "label": {
+        "en": "Refresh the biathlon data",
+        "fr": "Actualiser les données biathlon",
+        "de": "Biathlon-Daten aktualisieren",
+        "es": "Actualizar los datos de biatlón"
+      },
+      "description": {
+        "en": "Read the IBU data now, without waiting for the refresh interval.",
+        "fr": "Lit les données IBU maintenant, sans attendre l'intervalle de rafraîchissement.",
+        "de": "Liest die IBU-Daten sofort, ohne auf das Intervall zu warten.",
+        "es": "Lee los datos de la IBU ahora, sin esperar al intervalo de actualización."
+      },
+      "timeout_seconds": 120,
+      "outputs": [
+        {
+          "key": "success",
+          "type": "boolean",
+          "label": {
+            "en": "Success",
+            "fr": "Succès",
+            "de": "Erfolg",
+            "es": "Éxito"
+          }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "next_races",
+      "label": {
+        "en": "Next biathlon races",
+        "fr": "Prochaines courses de biathlon",
+        "de": "Nächste Biathlonrennen",
+        "es": "Próximas carreras de biatlón"
+      },
+      "description": {
+        "en": "Date, time and venue of the next races.",
+        "fr": "Date, heure et lieu des prochaines courses.",
+        "de": "Datum, Uhrzeit und Ort der nächsten Rennen.",
+        "es": "Fecha, hora y sede de las próximas carreras."
+      },
+      "icon": "calendar",
+      "action_timeout_seconds": 120,
+      "settings": [
+        {
+          "key": "gender",
+          "type": "select",
+          "label": {
+            "en": "Gender",
+            "fr": "Catégorie",
+            "de": "Kategorie",
+            "es": "Categoría"
+          },
+          "required": false,
+          "default": "all",
+          "options": [
+            {
+              "value": "all",
+              "label": {
+                "en": "All races",
+                "fr": "Toutes les courses",
+                "de": "Alle Rennen",
+                "es": "Todas las carreras"
+              }
+            },
+            {
+              "value": "men",
+              "label": {
+                "en": "Men",
+                "fr": "Hommes",
+                "de": "Herren",
+                "es": "Hombres"
+              }
+            },
+            {
+              "value": "women",
+              "label": {
+                "en": "Women",
+                "fr": "Femmes",
+                "de": "Damen",
+                "es": "Mujeres"
+              }
+            },
+            {
+              "value": "mixed",
+              "label": {
+                "en": "Mixed",
+                "fr": "Mixte",
+                "de": "Mixed",
+                "es": "Mixto"
+              }
+            }
+          ]
+        },
+        {
+          "key": "count",
+          "type": "number",
+          "label": {
+            "en": "Number of races",
+            "fr": "Nombre de courses",
+            "de": "Anzahl der Rennen",
+            "es": "Número de carreras"
+          },
+          "required": false,
+          "default": 5,
+          "min": 1,
+          "max": 8
+        }
+      ]
+    },
+    {
+      "key": "standings",
+      "label": {
+        "en": "Biathlon standings",
+        "fr": "Classement biathlon",
+        "de": "Biathlon-Wertung",
+        "es": "Clasificación de biatlón"
+      },
+      "description": {
+        "en": "World Cup or IBU Cup standing, followed athletes highlighted.",
+        "fr": "Classement Coupe du monde ou IBU Cup, athlètes suivis en évidence.",
+        "de": "Weltcup- oder IBU-Cup-Wertung, verfolgte Athleten hervorgehoben.",
+        "es": "Clasificación de la Copa del Mundo o IBU Cup, atletas seguidos resaltados."
+      },
+      "icon": "award",
+      "settings": [
+        {
+          "key": "gender",
+          "type": "select",
+          "label": {
+            "en": "Gender",
+            "fr": "Catégorie",
+            "de": "Kategorie",
+            "es": "Categoría"
+          },
+          "required": false,
+          "default": "men",
+          "options": [
+            {
+              "value": "men",
+              "label": {
+                "en": "Men",
+                "fr": "Hommes",
+                "de": "Herren",
+                "es": "Hombres"
+              }
+            },
+            {
+              "value": "women",
+              "label": {
+                "en": "Women",
+                "fr": "Femmes",
+                "de": "Damen",
+                "es": "Mujeres"
+              }
+            }
+          ]
+        },
+        {
+          "key": "cup",
+          "type": "select",
+          "label": {
+            "en": "Standing",
+            "fr": "Classement",
+            "de": "Wertung",
+            "es": "Clasificación"
+          },
+          "required": false,
+          "default": "overall",
+          "options": [
+            {
+              "value": "overall",
+              "label": {
+                "en": "Overall",
+                "fr": "Général",
+                "de": "Gesamt",
+                "es": "General"
+              }
+            },
+            {
+              "value": "sprint",
+              "label": {
+                "en": "Sprint",
+                "fr": "Sprint",
+                "de": "Sprint",
+                "es": "Sprint"
+              }
+            },
+            {
+              "value": "pursuit",
+              "label": {
+                "en": "Pursuit",
+                "fr": "Poursuite",
+                "de": "Verfolgung",
+                "es": "Persecución"
+              }
+            },
+            {
+              "value": "individual",
+              "label": {
+                "en": "Individual",
+                "fr": "Individuel",
+                "de": "Einzel",
+                "es": "Individual"
+              }
+            },
+            {
+              "value": "mass_start",
+              "label": {
+                "en": "Mass start",
+                "fr": "Mass start",
+                "de": "Massenstart",
+                "es": "Salida en masa"
+              }
+            },
+            {
+              "value": "nations",
+              "label": {
+                "en": "Nations cup",
+                "fr": "Coupe des nations",
+                "de": "Nationencup",
+                "es": "Copa de naciones"
+              }
+            }
+          ]
+        },
+        {
+          "key": "count",
+          "type": "number",
+          "label": {
+            "en": "Number of rows",
+            "fr": "Nombre de lignes",
+            "de": "Anzahl der Zeilen",
+            "es": "Número de filas"
+          },
+          "required": false,
+          "default": 10,
+          "min": 1,
+          "max": 10
+        }
+      ]
+    },
+    {
+      "key": "athlete",
+      "label": {
+        "en": "Biathlete",
+        "fr": "Biathlète",
+        "de": "Biathlet",
+        "es": "Biatleta"
+      },
+      "description": {
+        "en": "Rank, points and shooting statistics of a followed athlete.",
+        "fr": "Rang, points et statistiques de tir d'un athlète suivi.",
+        "de": "Platz, Punkte und Schießstatistik eines verfolgten Athleten.",
+        "es": "Puesto, puntos y estadísticas de tiro de un atleta seguido."
+      },
+      "icon": "user",
+      "settings": [
+        {
+          "key": "athlete",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Athlete",
+            "fr": "Athlète",
+            "de": "Athlet",
+            "es": "Atleta"
+          },
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "last_results",
+      "label": {
+        "en": "Last biathlon results",
+        "fr": "Derniers résultats de biathlon",
+        "de": "Letzte Biathlon-Ergebnisse",
+        "es": "Últimos resultados de biatlón"
+      },
+      "description": {
+        "en": "Podium of the last race and the followed athletes' places.",
+        "fr": "Podium de la dernière course et places des athlètes suivis.",
+        "de": "Podium des letzten Rennens und Plätze der verfolgten Athleten.",
+        "es": "Podio de la última carrera y puestos de los atletas seguidos."
+      },
+      "icon": "flag",
+      "settings": [
+        {
+          "key": "gender",
+          "type": "select",
+          "label": {
+            "en": "Gender",
+            "fr": "Catégorie",
+            "de": "Kategorie",
+            "es": "Categoría"
+          },
+          "required": false,
+          "default": "all",
+          "options": [
+            {
+              "value": "all",
+              "label": {
+                "en": "All races",
+                "fr": "Toutes les courses",
+                "de": "Alle Rennen",
+                "es": "Todas las carreras"
+              }
+            },
+            {
+              "value": "men",
+              "label": {
+                "en": "Men",
+                "fr": "Hommes",
+                "de": "Herren",
+                "es": "Hombres"
+              }
+            },
+            {
+              "value": "women",
+              "label": {
+                "en": "Women",
+                "fr": "Femmes",
+                "de": "Damen",
+                "es": "Mujeres"
+              }
+            },
+            {
+              "value": "mixed",
+              "label": {
+                "en": "Mixed",
+                "fr": "Mixte",
+                "de": "Mixed",
+                "es": "Mixto"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
