@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-15
+
 ### Fixed
 
 - Adding a device failed with "HTTP 422 — t_device_feature.min cannot be
@@ -45,5 +47,6 @@ the notes of the version's GitHub Release.
 - `SECURITY.md`, `CLAUDE.md`, CI (format, lint, tests on Node 22 and 24, Docker
   build), multi-arch image release and GitHub Releases.
 
-[Unreleased]: https://github.com/gboulvin/Gladys-IBU/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/gboulvin/Gladys-IBU/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/gboulvin/Gladys-IBU/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/gboulvin/Gladys-IBU/releases/tag/v1.0.0
