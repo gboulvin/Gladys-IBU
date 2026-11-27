@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-27
+
 ### Fixed
 
 - The standings, the shooting statistics and the last race of the athletes
@@ -71,7 +73,8 @@ the notes of the version's GitHub Release.
 - `SECURITY.md`, `CLAUDE.md`, CI (format, lint, tests on Node 22 and 24, Docker
   build), multi-arch image release and GitHub Releases.
 
-[Unreleased]: https://github.com/gboulvin/Gladys-IBU/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/gboulvin/Gladys-IBU/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/gboulvin/Gladys-IBU/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/gboulvin/Gladys-IBU/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/gboulvin/Gladys-IBU/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/gboulvin/Gladys-IBU/releases/tag/v1.0.0
