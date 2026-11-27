@@ -83,6 +83,10 @@ Dokumentation beschrieben.
 
 ## Fehlerbehebung
 
+- **Wertung oder Statistik der Vorsaison** — bis zum ersten Rennen einer neuen
+  Saison zeigen Wertung, Schießstatistik und letztes Rennen die Vorsaison; sie
+  wechseln etwa 30 Minuten nach dem Start des ersten Rennens. Die Widgets
+  Wertung und Biathlet zeigen die Saison an.
 - **„Die IBU-API hat den Schlüssel abgelehnt (401)“** — Schlüssel falsch oder
   abgelaufen: neuen Schlüssel besorgen (Schritt 1).
 - Prüfen Sie die Integrationsprotokolle in Gladys (`LOG_LEVEL=debug`).

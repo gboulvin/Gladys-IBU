@@ -10,6 +10,18 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+### Fixed
+
+- The standings, the shooting statistics and the last race of the athletes
+  stayed on the previous season (2025/2026) after the new one started: they
+  followed the season the IBU flags as current for results, a flag the IBU
+  flips late. They now move to the new season about 30 minutes after its first
+  race starts, and the athletes are read again at once.
+
+### Changed
+
+- The standings and athlete widgets show the season they display.
+
 ## [1.1.0] - 2026-11-15
 
 ### Changed

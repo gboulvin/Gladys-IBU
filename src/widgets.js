@@ -169,15 +169,17 @@ export const WIDGETS = {
           })),
         },
       ];
-      if (standings.asOf) {
-        const asOf = {};
-        for (const lang of LANGUAGES) {
-          asOf[lang] = pick(
-            t('as_of', { date: formatDate(standings.asOf, lang, config.timezone) }),
-            lang,
-          );
-        }
-        components.push({ type: 'text', text: asOf, variant: 'caption' });
+      // Always say which season the standing is: before the first race of a
+      // new season it is still the previous one.
+      const season = service.statsSeasonLabel;
+      const caption = {};
+      for (const lang of LANGUAGES) {
+        const date = standings.asOf ? formatDate(standings.asOf, lang, config.timezone) : '';
+        const key = date ? 'season_as_of' : 'season';
+        caption[lang] = clip(pick(t(key, { season, date }), lang), 80);
+      }
+      if (season || standings.asOf) {
+        components.push({ type: 'text', text: caption, variant: 'caption' });
       }
       return { ttl_seconds: TTL_SECONDS, components };
     },
@@ -254,6 +256,13 @@ export const WIDGETS = {
       }
       if (items.length > 0) {
         components.push({ type: 'status', items });
+      }
+      if (service.statsSeasonLabel) {
+        components.push({
+          type: 'text',
+          text: t('season', { season: service.statsSeasonLabel }),
+          variant: 'caption',
+        });
       }
       return { ttl_seconds: TTL_SECONDS, components };
     },

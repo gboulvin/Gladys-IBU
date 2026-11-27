@@ -119,6 +119,11 @@ déclencher.
 
 ## Dépannage
 
+- **Classement ou statistiques de la saison passée** — jusqu'à la première
+  course d'une nouvelle saison, le classement, les statistiques de tir et la
+  dernière course sont ceux de la saison précédente ; ils basculent environ
+  30 minutes après le départ de la première course. Les widgets classement et
+  athlète indiquent la saison affichée.
 - **« Saisissez votre clé d'API IBU »** — le champ de la clé est vide.
 - **« L'API IBU a refusé la clé (401) »** — la clé est fausse ou a expiré :
   récupérez-en une nouvelle (voir l'étape 1).

@@ -29,6 +29,7 @@ import {
   normalizeSearch,
   normalizeStandings,
   pickSeasons,
+  seasonOfId,
   placementOf,
   shootingStats,
   upcomingRaces,
@@ -75,6 +76,8 @@ export class BiathlonService {
 
   reset() {
     this.seasons = null;
+    // Season of the standings and statistics (see pickStatsSeason).
+    this.statsSeason = '';
     this.seasonsReadAt = 0;
     this.races = [];
     this.competitionsCache = new Map(); // eventId -> races of a past event
@@ -201,6 +204,7 @@ export class BiathlonService {
       races.push(...eventRaces);
     }
     this.races = races.sort((a, b) => a.start - b.start);
+    this.statsSeason = pickStatsSeason(this.seasons, this.races, now);
   }
 
   async checkFinishedRaces(now) {
@@ -281,7 +285,7 @@ export class BiathlonService {
       if (!leader) {
         continue;
       }
-      const memoryKey = `${this.config.level}:${this.seasons.results}:${gender}`;
+      const memoryKey = `${this.config.level}:${this.statsSeason}:${gender}`;
       const previous = this.memory.leaders[memoryKey];
       const leaderKey = leader.ibuId || leader.name;
       if (previous && previous.id !== leaderKey) {
@@ -305,7 +309,7 @@ export class BiathlonService {
     }
     if (!this.cups) {
       try {
-        this.cups = await this.client.cups(this.seasons.results);
+        this.cups = await this.client.cups(this.statsSeason || this.seasons.results);
       } catch (err) {
         // The composed cup ids still work without the list.
         logger.warn(`Cups list unavailable: ${err.message}`);
@@ -314,7 +318,7 @@ export class BiathlonService {
     }
     const cupId = cupIdFor({
       cups: this.cups,
-      seasonId: this.seasons.results,
+      seasonId: this.statsSeason || this.seasons.results,
       level: this.config.level,
       gender,
       cupType,
@@ -343,11 +347,13 @@ export class BiathlonService {
         if (
           raceFinished ||
           !athlete.resultsReadAt ||
+          athlete.statsSeason !== this.statsSeason ||
           now - athlete.resultsReadAt > ATHLETE_RESULTS_TTL
         ) {
           const rows = allResultsRows(await this.client.athleteResults(ibuId));
-          athlete.stats = shootingStats(rows, this.seasons.results);
-          athlete.lastResult = lastSeasonResult(rows, this.seasons.results);
+          athlete.stats = shootingStats(rows, this.statsSeason);
+          athlete.lastResult = lastSeasonResult(rows, this.statsSeason);
+          athlete.statsSeason = this.statsSeason;
           athlete.resultsReadAt = now.getTime();
         }
       } catch (err) {
@@ -383,6 +389,12 @@ export class BiathlonService {
 
   latestResult(gender = 'all') {
     return gender === 'all' ? this.lastResult : (this.lastResults.get(gender) ?? null);
+  }
+
+  /** "2026/2027": the season of the standings and statistics. */
+  get statsSeasonLabel() {
+    const id = this.statsSeason || this.seasons?.results || '';
+    return /^\d{4}$/.test(id) ? `20${id.slice(0, 2)}/20${id.slice(2)}` : '';
   }
 
   overall(gender) {
@@ -422,6 +434,26 @@ export class BiathlonService {
     await this.client.events(picked.schedule, this.config.level);
     return { count: Array.isArray(seasons) ? seasons.length : 0, label: picked.label };
   }
+}
+
+/**
+ * Season of the standings and statistics. The IBU flags the season "whose
+ * results are current" (`IsCurrentResults`) and flips that flag on its own
+ * schedule, sometimes well after the first race of a new season: the newest
+ * season with a race started at least RESULTS_CHECK_DELAY ago wins, whatever
+ * the flag says. Before the first race of a season, the previous one stays.
+ */
+export function pickStatsSeason(seasons, races, now) {
+  const candidates = [seasons.schedule, seasons.results].filter(Boolean);
+  const started = candidates
+    .filter((seasonId) =>
+      races.some(
+        (race) => seasonOfId(race.raceId) === seasonId && now - race.start >= RESULTS_CHECK_DELAY,
+      ),
+    )
+    .sort()
+    .reverse();
+  return started[0] || seasons.results || seasons.schedule || '';
 }
 
 /** Lower case, no accents, single spaces: "Bø  " -> "bo". */

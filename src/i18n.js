@@ -172,11 +172,17 @@ const MESSAGES = {
   },
   races: { en: 'Races', fr: 'Courses', de: 'Rennen', es: 'Carreras' },
   misses: { en: 'misses', fr: 'fautes', de: 'Fehler', es: 'fallos' },
-  as_of: {
-    en: 'As of {date}',
-    fr: 'Au {date}',
-    de: 'Stand {date}',
-    es: 'A fecha de {date}',
+  season: {
+    en: 'Season {season}',
+    fr: 'Saison {season}',
+    de: 'Saison {season}',
+    es: 'Temporada {season}',
+  },
+  season_as_of: {
+    en: 'Season {season} — as of {date}',
+    fr: 'Saison {season} — au {date}',
+    de: 'Saison {season} — Stand {date}',
+    es: 'Temporada {season} — a fecha de {date}',
   },
   podium_of: {
     en: 'Podium — {race}',

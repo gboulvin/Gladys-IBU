@@ -84,6 +84,11 @@ documentación en inglés.
 
 ## Solución de problemas
 
+- **Clasificación o estadísticas de la temporada pasada** — hasta la primera
+  carrera de una nueva temporada, la clasificación, las estadísticas de tiro y
+  la última carrera son las de la temporada anterior; cambian unos 30 minutos
+  después de la salida de la primera carrera. Los widgets de clasificación y
+  de atleta indican la temporada.
 - **«La API de la IBU rechazó la clave (401)»** — clave incorrecta o caducada:
   obtenga una nueva (paso 1).
 - Consulte los registros de la integración en Gladys (`LOG_LEVEL=debug`).

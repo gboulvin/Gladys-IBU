@@ -152,3 +152,46 @@ test('searchAthletes and testConnection', async () => {
   assert.deepEqual(await service.testConnection(), { count: 3, label: '2026/2027' });
   void NOW;
 });
+
+// The IBU still flags last season as the one "whose results are current".
+const lateFlag = {
+  Seasons: () => [
+    { SeasonId: '2627', Description: '2026/2027', IsCurrent: true, IsCurrentScheduled: true },
+    { SeasonId: '2526', Description: '2025/2026', IsCurrentResults: true },
+  ],
+};
+
+test('standings and statistics move to the new season after its first race, whatever the IBU flag', async () => {
+  // The first race of 2026/2027 starts on 29 Nov at 12:00; 10 minutes later
+  // it is too early: the previous season stays.
+  const { service, setNow } = createService({
+    now: new Date('2026-11-29T12:10:00Z'),
+    overrides: lateFlag,
+  });
+  await service.refresh();
+  assert.equal(service.statsSeason, '2526');
+  assert.equal(service.statsSeasonLabel, '2025/2026');
+  assert.equal(service.athlete(FOLLOWED).stats.races, 1, 'last season: one mass start');
+
+  // 45 minutes after the start: the new season, athletes re-read at once
+  // (well within their 6-hour cache).
+  setNow(new Date('2026-11-29T12:45:00Z'));
+  await service.refresh();
+  assert.equal(service.statsSeason, '2627');
+  assert.equal(service.statsSeasonLabel, '2026/2027');
+  assert.equal(service.athlete(FOLLOWED).stats.races, 2);
+  assert.equal(service.overall('men').rows[0].ibuId, FOLLOWED_2);
+  assert.deepEqual(service.athlete(FOLLOWED).standing, { gender: 'men', rank: 2, points: 170 });
+});
+
+test('a season change fires no leader change', async () => {
+  const { service, setNow } = createService({
+    now: new Date('2026-11-29T12:10:00Z'),
+    memory: { initialized: true },
+    overrides: lateFlag,
+  });
+  await service.refresh();
+  setNow(new Date('2026-11-29T12:45:00Z'));
+  const events = await service.refresh();
+  assert.ok(!events.some((e) => e.type === SCENE_EVENT_TYPES.LEADER_CHANGED));
+});

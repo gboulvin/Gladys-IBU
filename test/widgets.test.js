@@ -137,3 +137,12 @@ test('refreshWidgets nudges every widget', () => {
   refreshWidgets(fresh);
   assert.deepEqual(fresh.fake.widgetRefreshes, Object.keys(WIDGETS));
 });
+
+test('the standings and athlete widgets say which season they show', async () => {
+  const context = await refreshedService();
+  const standings = await getContent(WIDGET_KEYS.STANDINGS, context, { gender: 'men' }, 'fr');
+  const caption = standings.components.find((c) => c.variant === 'caption');
+  assert.match(caption.text.fr, /^Saison 2026\/2027 — au /);
+  const athlete = await getContent(WIDGET_KEYS.ATHLETE, context, { athlete_name: 'jacquelin' });
+  assert.equal(athlete.components.at(-1).text.de, 'Saison 2026/2027');
+});

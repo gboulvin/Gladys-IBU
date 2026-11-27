@@ -114,6 +114,10 @@ the past and fires nothing.
 
 ## Troubleshooting
 
+- **Standings or statistics of last season** — until the first race of a
+  new season, the standings, the shooting statistics and the last race are
+  those of the previous season; they switch about 30 minutes after the first
+  race starts. The standings and athlete widgets show the season.
 - **"Enter your IBU API key"** — the key field is empty.
 - **"The IBU API refused the key (401)"** — the key is wrong or expired: get a
   new one (see step 1).
