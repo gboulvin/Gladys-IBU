@@ -58,7 +58,10 @@ nunca se escribe en los registros.
 
 La precisión se calcula sobre las carreras individuales de la temporada
 (sprint, persecución, individual, salida en masa), 5 blancos por tirada. Los
-relevos quedan excluidos (cartuchos de reserva).
+relevos quedan excluidos (cartuchos de reserva). Solo cuentan las carreras
+terminadas del nivel de competición configurado (Copa del Mundo por defecto:
+ni IBU Cup, ni carreras nacionales o de verano); la fila **Carreras** del
+widget indica su número.
 
 ## Widgets del panel
 

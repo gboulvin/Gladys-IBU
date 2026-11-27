@@ -10,6 +10,13 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+### Fixed
+
+- Athlete statistics (number of races, shooting accuracy, last race) counted
+  every competition of the season the IBU lists for the athlete — IBU Cup,
+  national championships, summer races — and a race still running. Only the
+  finished races of the configured competition level count now.
+
 ## [1.1.1] - 2026-11-27
 
 ### Fixed

@@ -62,7 +62,10 @@ biathlonresults.com et jamais écrite dans les logs.
 
 La réussite au tir est calculée sur les courses individuelles de la saison en
 cours (sprint, poursuite, individuel, mass start), 5 cibles par tir. Les
-relais sont exclus : leurs balles de pioche ne sont pas comparables.
+relais sont exclus : leurs balles de pioche ne sont pas comparables. Seules
+les courses terminées du niveau de compétition configuré comptent (Coupe du
+monde par défaut : ni IBU Cup, ni courses nationales ou d'été) ; la ligne
+**Courses** du widget en donne le nombre.
 
 ## Widgets du tableau de bord
 

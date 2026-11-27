@@ -362,7 +362,26 @@ export function parseShootings(text) {
  * individual races of `seasonId` only (relays use spare rounds and do not
  * compare). 5 targets per stage.
  */
-export function shootingStats(results, seasonId) {
+/** Event a race belongs to: its id without the category and discipline. */
+export function eventOfRaceId(raceId) {
+  return str(raceId).slice(0, -4);
+}
+
+/**
+ * Whether an AllResults row counts for the season statistics. AllResults
+ * lists every competition of the athlete — IBU Cup, national championships,
+ * summer biathlon — so only the races of `eventIds` (the events of the
+ * configured level) count, when known. And only finished races: one with a
+ * rank (or a DNF/DSQ status), never a race still running.
+ */
+function countsForSeason(row, seasonId, eventIds) {
+  const raceId = str(row.RaceId);
+  if (seasonId && seasonOfId(raceId) !== seasonId) return false;
+  if (eventIds && eventIds.size > 0 && !eventIds.has(eventOfRaceId(raceId))) return false;
+  return toInt(row.Rank ?? row.Place) !== null || str(row.IRM) !== '';
+}
+
+export function shootingStats(results, seasonId, eventIds = null) {
   const stats = {
     races: 0,
     shots: 0,
@@ -373,13 +392,16 @@ export function shootingStats(results, seasonId) {
     standHits: 0,
   };
   for (const row of results) {
+    if (!countsForSeason(row, seasonId, eventIds)) continue;
     const raceId = str(row.RaceId);
-    if (seasonId && seasonOfId(raceId) !== seasonId) continue;
     const discipline = disciplineOf('', raceId);
     if (isRelay(discipline)) continue;
     const stages = parseShootings(row.Shootings);
     if (!stages) continue;
     const order = SHOOTING_ORDER[discipline] ?? '';
+    // A shooting string shorter than the discipline's is a race still running
+    // (or a DNF mid-race): its stages do not compare.
+    if (order && stages.length !== order.length) continue;
     stats.races += 1;
     stages.forEach((misses, index) => {
       const hits = Math.max(0, 5 - Math.min(5, misses));
@@ -409,9 +431,9 @@ export function shootingStats(results, seasonId) {
  * Most recent individual result of a season in an AllResults list: the
  * highest race id (event numbers grow along the season).
  */
-export function lastSeasonResult(results, seasonId) {
+export function lastSeasonResult(results, seasonId, eventIds = null) {
   const rows = results
-    .filter((row) => !seasonId || seasonOfId(row.RaceId) === seasonId)
+    .filter((row) => countsForSeason(row, seasonId, eventIds))
     .filter((row) => toInt(row.Rank ?? row.Place) !== null);
   rows.sort((a, b) => str(b.RaceId).localeCompare(str(a.RaceId)));
   const last = rows[0];

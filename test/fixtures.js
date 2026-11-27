@@ -27,6 +27,14 @@ const seasons = [
 
 const events = [
   {
+    EventId: 'BT2526SWRLCP09',
+    ShortDescription: 'Oslo Holmenkollen',
+    Description: 'BMW IBU World Cup Biathlon Oslo Holmenkollen',
+    Nat: 'NOR',
+    StartDate: '2026-03-19T00:00:00',
+    EndDate: '2026-03-22T00:00:00',
+  },
+  {
     EventId: 'BT2627SWRLCP01',
     ShortDescription: 'Kontiolahti',
     Description: 'BMW IBU World Cup Biathlon Kontiolahti',
@@ -199,6 +207,8 @@ const allResults = {
       },
       { RaceId: 'BT2627SWRLCP01MXRL', Comp: 'Mixed relay', Rank: '1', Shootings: '0+1 0+2' },
       { RaceId: 'BT2526SWRLCP09SMMS', Comp: 'Mass start', Rank: '1', Shootings: '0+0+0+0' },
+      { RaceId: 'BT2627SIBUCP01SMSP', Comp: 'IBU Cup sprint', Rank: '1', Shootings: '0+0' },
+      { RaceId: 'BT2627SWRLCP02SMPU', Comp: 'Pursuit', Rank: '', Shootings: '0+0' },
     ],
   },
   [FOLLOWED_2]: {

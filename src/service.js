@@ -78,6 +78,7 @@ export class BiathlonService {
     this.seasons = null;
     // Season of the standings and statistics (see pickStatsSeason).
     this.statsSeason = '';
+    this.levelEventIds = new Set();
     this.seasonsReadAt = 0;
     this.races = [];
     this.competitionsCache = new Map(); // eventId -> races of a past event
@@ -178,6 +179,9 @@ export class BiathlonService {
     const seasonIds = [...new Set([this.seasons.results, this.seasons.schedule].filter(Boolean))];
     const allEvents = (await Promise.all(seasonIds.map((id) => this.readEvents(id)))).flat();
     allEvents.sort((a, b) => (a.start ?? 0) - (b.start ?? 0));
+    // Every event of the configured level: the athlete statistics only count
+    // their races (AllResults also lists the other levels).
+    this.levelEventIds = new Set(allEvents.map((e) => e.eventId));
 
     // The running and upcoming events, plus the last finished one (its races
     // carry the last results shown before the next event starts).
@@ -351,8 +355,8 @@ export class BiathlonService {
           now - athlete.resultsReadAt > ATHLETE_RESULTS_TTL
         ) {
           const rows = allResultsRows(await this.client.athleteResults(ibuId));
-          athlete.stats = shootingStats(rows, this.statsSeason);
-          athlete.lastResult = lastSeasonResult(rows, this.statsSeason);
+          athlete.stats = shootingStats(rows, this.statsSeason, this.levelEventIds);
+          athlete.lastResult = lastSeasonResult(rows, this.statsSeason, this.levelEventIds);
           athlete.statsSeason = this.statsSeason;
           athlete.resultsReadAt = now.getTime();
         }

@@ -58,7 +58,10 @@ never written to the logs.
 
 Shooting accuracy is computed on the individual races of the current season
 (sprint, pursuit, individual, mass start), 5 targets per shooting stage.
-Relays are left out: their spare rounds do not compare.
+Relays are left out: their spare rounds do not compare. Only the finished
+races of the configured competition level count (World Cup by default: no IBU
+Cup, national or summer races); the **Races** row of the widget is their
+number.
 
 ## Dashboard widgets
 

@@ -56,11 +56,11 @@ test('shooting strings: individual format only', () => {
 test('shooting statistics split prone and standing per discipline, season only', () => {
   const stats = shootingStats(
     [
-      { RaceId: 'BT2627SWRLCP01SMSP', Shootings: '0+1' }, // P S
-      { RaceId: 'BT2627SWRLCP01SMPU', Shootings: '1+0+2+0' }, // P P S S
-      { RaceId: 'BT2627SWRLCP01SMIN', Shootings: '0+0+1+0' }, // P S P S
-      { RaceId: 'BT2627SWRLCP01MXRL', Shootings: '0+1 0+2' }, // relay: ignored
-      { RaceId: 'BT2526SWRLCP01SMSP', Shootings: '5+5' }, // other season: ignored
+      { RaceId: 'BT2627SWRLCP01SMSP', Rank: '4', Shootings: '0+1' }, // P S
+      { RaceId: 'BT2627SWRLCP01SMPU', Rank: '2', Shootings: '1+0+2+0' }, // P P S S
+      { RaceId: 'BT2627SWRLCP01SMIN', Rank: '7', Shootings: '0+0+1+0' }, // P S P S
+      { RaceId: 'BT2627SWRLCP01MXRL', Rank: '1', Shootings: '0+1 0+2' }, // relay: ignored
+      { RaceId: 'BT2526SWRLCP01SMSP', Rank: '9', Shootings: '5+5' }, // other season: ignored
     ],
     '2627',
   );
@@ -73,6 +73,25 @@ test('shooting statistics split prone and standing per discipline, season only',
   // Standing: 1 + 2,0 + 0,0 misses over 25 shots -> 22/25.
   assert.equal(stats.standing, 88);
   assert.equal(shootingStats([], '2627').accuracy, null);
+});
+
+test('statistics count only finished races of the configured level', () => {
+  const rows = [
+    { RaceId: 'BT2627SWRLCP01SWSP', Rank: '3', Shootings: '0+1' }, // World Cup: counts
+    { RaceId: 'BT2627SIBUCP01SWSP', Rank: '1', Shootings: '0+0' }, // IBU Cup
+    { RaceId: 'BT2627SNATCH01SWSP', Rank: '1', Shootings: '0+0' }, // national championships
+    { RaceId: 'BT2627SWRLCP01SWIN', Rank: '', Shootings: '0+1' }, // running: no rank yet
+    { RaceId: 'BT2627SWRLCP01SWPU', Rank: '5', Shootings: '0+1' }, // pursuit cut short
+    { RaceId: 'BT2627SWRLCP01SWMS', IRM: 'DNF', Shootings: '0+0+1+0' }, // DNF after the range
+  ];
+  const level = new Set(['BT2627SWRLCP01']);
+  const stats = shootingStats(rows, '2627', level);
+  assert.equal(stats.races, 2, 'the World Cup sprint and the DNF mass start');
+  assert.equal(stats.shots, 30);
+  assert.equal(stats.hits, 28);
+  assert.equal(lastSeasonResult(rows, '2627', level).raceId, 'BT2627SWRLCP01SWSP');
+  // The level unknown (no event read yet): every finished race of the season.
+  assert.equal(shootingStats(rows, '2627').races, 4);
 });
 
 test('relay results rank the teams and keep the legs', () => {

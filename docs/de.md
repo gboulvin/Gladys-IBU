@@ -58,7 +58,10 @@ biathlonresults.com gesendet und nie protokolliert.
 
 Die Trefferquote wird über die Einzelrennen der laufenden Saison berechnet
 (Sprint, Verfolgung, Einzel, Massenstart), 5 Scheiben pro Schießeinlage.
-Staffeln sind ausgenommen (Nachladepatronen).
+Staffeln sind ausgenommen (Nachladepatronen). Es zählen nur beendete Rennen
+der konfigurierten Wettkampfebene (standardmäßig Weltcup: keine IBU-Cup-,
+nationalen oder Sommerrennen); die Zeile **Rennen** des Widgets zeigt ihre
+Anzahl.
 
 ## Dashboard-Widgets
 
